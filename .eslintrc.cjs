@@ -10,12 +10,13 @@ module.exports = {
     project: ['./tsconfig.json'],
     tsconfigRootDir: __dirname,
   },
-  ignorePatterns: ['.next/**', 'out/**', 'build/**', 'next-env.d.ts'],
+  ignorePatterns: ['.next/**', 'out/**', 'build/**', 'next-env.d.ts', '*.cjs'],
   plugins: ['import'],
   rules: {
     'react/react-in-jsx-scope': 'off',
     'react/jsx-props-no-spreading': 'off',
     'import/prefer-default-export': 'off',
+    'import/extensions': 'off',
     'import/order': [
       'error',
       {

@@ -1,3 +1,10 @@
+'use client';
+
+import { useState } from 'react';
+
+import { doc, writeBatch } from 'firebase/firestore';
+import { toast } from 'sonner';
+
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import {
@@ -8,19 +15,100 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-
-// (Datos del PDF, RF-M3)
-const inventoryData = [
-  { tipo: 'Tipo A', presentacion: '30 unidades (cubeta)', precio: '$ 10.500', stock: 150 },
-  { tipo: 'Tipo AA', presentacion: '30 unidades (cubeta)', precio: '$ 20.700', stock: 80 },
-  { tipo: 'Tipo B', presentacion: '30 unidades (cubeta)', precio: '$ 11.350', stock: 120 },
-];
+import { useFirestoreCollection } from '@/hooks/useFirestoreCollection';
+import { db } from '@/lib/firebase';
+import { PRECIOS_HUEVOS, type InventarioItem } from '@/lib/schemas';
 
 export default function InventarioPage() {
+  const [isInitializing, setIsInitializing] = useState(false);
+  const { data: inventario, loading } = useFirestoreCollection<InventarioItem>('inventario');
+
+  // (RF-M3 / RF-M6) Lógica para inicializar la base de datos
+  const handleInitData = async () => {
+    setIsInitializing(true);
+    toast.info('Inicializando datos...');
+    try {
+      const batch = writeBatch(db);
+
+      // (RF-M3) Crear docs de inventario
+      batch.set(doc(db, 'inventario', 'A'), {
+        nombre: 'Tipo A',
+        precio: PRECIOS_HUEVOS.A,
+        stock: 150, // Stock inicial
+      });
+      batch.set(doc(db, 'inventario', 'AA'), {
+        nombre: 'Tipo AA',
+        precio: PRECIOS_HUEVOS.AA,
+        stock: 80, // Stock inicial
+      });
+      batch.set(doc(db, 'inventario', 'B'), {
+        nombre: 'Tipo B',
+        precio: PRECIOS_HUEVOS.B,
+        stock: 120, // Stock inicial
+      });
+
+      // (RF-M6.1) Crear doc de saldo
+      batch.set(doc(db, 'contabilidad', 'saldo'), {
+        monto: 1000000, // Saldo inicial arbitrario
+      });
+
+      await batch.commit();
+      toast.success('Datos inicializados correctamente.');
+    } catch (error) {
+      toast.error('Error al inicializar datos.');
+      console.error(error);
+    } finally {
+      setIsInitializing(false);
+    }
+  };
+
+  const renderContent = () => {
+    if (loading) {
+      return (
+        <TableRow>
+          <TableCell colSpan={4} className="h-24 text-center">
+            Cargando inventario...
+          </TableCell>
+        </TableRow>
+      );
+    }
+
+    if (inventario.length === 0) {
+      return (
+        <TableRow>
+          <TableCell colSpan={4} className="h-24 text-center">
+            <p>No hay datos de inventario.</p>
+            <Button
+              onClick={handleInitData}
+              disabled={isInitializing}
+              className="mt-4 bg-accent text-text-dark hover:bg-accent/90"
+            >
+              {isInitializing ? 'Inicializando...' : 'Inicializar Datos (RF-M3)'}
+            </Button>
+          </TableCell>
+        </TableRow>
+      );
+    }
+
+    // (RF-M3) Renderizar tabla dinámica
+    return inventario
+      .sort((a, b) => a.nombre.localeCompare(b.nombre))
+      .map((item) => (
+        <TableRow key={item.id} className="border-accent/20">
+          <TableCell>{item.nombre}</TableCell>
+          <TableCell>30 unidades (cubeta)</TableCell>
+          <TableCell>
+            ${new Intl.NumberFormat('es-CO').format(item.precio)}
+          </TableCell>
+          <TableCell className="font-medium">{item.stock}</TableCell>
+        </TableRow>
+      ));
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-3xl font-bold">Inventario</h2>
+        <h2 className="text-3xl font-bold">Inventario (RF-M3)</h2>
         <Button className="bg-accent text-text-dark hover:bg-accent/90">
           Generar Reporte Excel (RF-M3.3)
         </Button>
@@ -37,16 +125,7 @@ export default function InventarioPage() {
                 <TableHead className="text-text-dark">Stock Actual (Cubetas)</TableHead>
               </TableRow>
             </TableHeader>
-            <TableBody>
-              {inventoryData.map((item) => (
-                <TableRow key={item.tipo} className="border-accent/20">
-                  <TableCell>{item.tipo}</TableCell>
-                  <TableCell>{item.presentacion}</TableCell>
-                  <TableCell>{item.precio}</TableCell>
-                  <TableCell className="font-medium">{item.stock}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
+            <TableBody>{renderContent()}</TableBody>
           </Table>
         </CardContent>
       </Card>
