@@ -1,0 +1,125 @@
+@import "tailwindcss";
+
+@plugin "tailwindcss-animate";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* Paleta Earthy Tones - SCM Huevos Kikes */
+  /* Base: #DEDBD2 (Beige claro/Gris) - Fondo principal */
+  --background: #DEDBD2;
+  /* Text Dark: #4A5759 (Grafito) - Texto principal */
+  --foreground: #4A5759;
+  
+  --radius: 0.625rem;
+  
+  /* Secondary: #F7E1D7 (Melocotón pálido) - Cards/Modals */
+  --card: #F7E1D7;
+  --card-foreground: #4A5759;
+  --popover: #F7E1D7;
+  --popover-foreground: #4A5759;
+  
+  /* Accent: #B0C4B1 (Verde Salvia) - Botones/Links principales */
+  --primary: #B0C4B1;
+  --primary-foreground: #4A5759;
+  
+  /* Base (variación más clara para secundario) */
+  --secondary: #F7E1D7;
+  --secondary-foreground: #4A5759;
+  
+  /* Base (variación para elementos silenciados) */
+  --muted: #DEDBD2;
+  --muted-foreground: #4A5759;
+  
+  /* Accent: #B0C4B1 (Verde Salvia) */
+  --accent: #B0C4B1;
+  --accent-foreground: #4A5759;
+  
+  /* Danger: #EDAFB8 (Rosa) - Error/Destacado */
+  --destructive: #EDAFB8;
+  
+  /* Bordes e inputs (derivado de base) */
+  --border: #C0BDB4;
+  --input: #C0BDB4;
+  --ring: #B0C4B1;
+  
+  /* Charts con paleta earthy */
+  --chart-1: #B0C4B1; /* Verde Salvia */
+  --chart-2: #F7E1D7; /* Melocotón */
+  --chart-3: #EDAFB8; /* Rosa */
+  --chart-4: #DEDBD2; /* Base */
+  --chart-5: #4A5759; /* Grafito */
+  
+  /* Sidebar con paleta earthy */
+  --sidebar: #F7E1D7;
+  --sidebar-foreground: #4A5759;
+  --sidebar-primary: #B0C4B1;
+  --sidebar-primary-foreground: #4A5759;
+  --sidebar-accent: #DEDBD2;
+  --sidebar-accent-foreground: #4A5759;
+  --sidebar-border: #C0BDB4;
+  --sidebar-ring: #B0C4B1;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+  color-scheme: light only;
+}
+
+/* Prevenir dark mode forzado */
+html.light,
+html[data-theme="light"],
+html {
+  color-scheme: light only !important;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
