@@ -18,6 +18,8 @@ export const clienteSchema = z.object({
   telefono: z.string().optional(),
   email: z.string().email('Correo inválido').optional(),
   direccion: z.string().optional(),
+  lat: z.number().optional(),
+  lng: z.number().optional(),
 });
 
 export type Cliente = z.infer<typeof clienteSchema> & { id: string };

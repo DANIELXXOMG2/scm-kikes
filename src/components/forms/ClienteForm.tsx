@@ -4,7 +4,7 @@ import * as React from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { addDoc, collection, doc, updateDoc } from 'firebase/firestore';
-import { MapPin } from 'lucide-react';
+import dynamic from 'next/dynamic';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 
@@ -15,6 +15,8 @@ import { db } from '@/lib/firebase';
 import { clienteSchema, type Cliente } from '@/lib/schemas';
 
 import type { z } from 'zod';
+
+const MapPicker = dynamic(() => import('@/components/ui/MapPicker'), { ssr: false });
 
 type ClienteFormValues = z.infer<typeof clienteSchema>;
 
@@ -35,6 +37,8 @@ export function ClienteForm({ cliente, onClose }: ClienteFormProps) {
       telefono: cliente?.telefono ?? '',
       email: cliente?.email ?? '',
       direccion: cliente?.direccion ?? '',
+      lat: cliente?.lat,
+      lng: cliente?.lng,
     },
   });
 
@@ -137,9 +141,15 @@ export function ClienteForm({ cliente, onClose }: ClienteFormProps) {
               )}
             />
 
-            <div className="flex h-64 items-center justify-center rounded-lg bg-secondary text-text-dark/70">
-              <MapPin className="h-12 w-12" />
-            </div>
+            <MapPicker
+              lat={form.getValues('lat')}
+              lng={form.getValues('lng')}
+              onLocationSelect={(lat, lng) => {
+                form.setValue('lat', lat, { shouldDirty: true });
+                form.setValue('lng', lng, { shouldDirty: true });
+              }}
+            />
+            <p className="text-xs text-text-dark/70">Toque en el mapa para fijar la ubicación exacta.</p>
           </div>
         </div>
 

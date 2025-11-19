@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { FirebaseError } from 'firebase/app';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -34,6 +35,20 @@ export default function LoginPage() {
     } catch (error) {
       console.error(error);
       toast.error('Error al iniciar sesión. Verifique sus credenciales.');
+    }
+  };
+
+  const handleRegister = async () => {
+    try {
+      await createUserWithEmailAndPassword(auth, 'admin@kikes.com', 'Admin123');
+      toast.success('Admin creado. Ahora puede iniciar sesión.');
+    } catch (error) {
+      if (error instanceof FirebaseError && error.code === 'auth/email-already-in-use') {
+        toast.info('El usuario admin ya existe. Inicie sesión.');
+      } else {
+        const message = error instanceof FirebaseError ? error.message : 'Desconocido';
+        toast.error(`Error al registrar admin: ${message}`);
+      }
     }
   };
 
@@ -87,6 +102,14 @@ export default function LoginPage() {
                   ¿Olvidó su contraseña?
                 </Button>
               </Link>
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full text-sm"
+                onClick={handleRegister}
+              >
+                Registrar Admin (Primer Uso)
+              </Button>
             </div>
           </form>
         </CardContent>
