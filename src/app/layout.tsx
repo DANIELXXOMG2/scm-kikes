@@ -17,10 +17,10 @@ const geistMono = Roboto_Mono({
 export const metadata: Metadata = {
   title: "SCM Huevos Kikes",
   description: "Sistema de Gestión de Cadena de Suministro - Huevos Kikes Villavicencio",
-  icons: {
-    icon: '/assets/logos/LOGO-KIKES.avif',
-    apple: '/assets/logos/LOGO-KIKES.avif',
-  },
+  icons: [
+    { rel: 'icon', url: '/assets/logos/LOGO-KIKES.avif' },
+    { rel: 'apple-touch-icon', url: '/assets/logos/LOGO-KIKES.avif' },
+  ],
 };
 
 export default function RootLayout({

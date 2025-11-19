@@ -11,7 +11,7 @@ import { toast } from 'sonner';
 import { ClienteForm } from '@/components/forms/ClienteForm';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -143,6 +143,9 @@ export default function ClientesPage() {
           <DialogContent className="max-w-4xl">
             <DialogHeader>
               <DialogTitle>{selectedCliente ? 'Editar cliente' : 'Registrar cliente'}</DialogTitle>
+              <DialogDescription>
+                Complete los datos para registrar o editar un cliente. (RNF-04)
+              </DialogDescription>
             </DialogHeader>
             <ClienteForm
               cliente={selectedCliente}

@@ -54,9 +54,12 @@ export function ProveedorForm({ proveedor, onClose }: ProveedorFormProps) {
     try {
       setIsSubmitting(true);
       const { rutFile: rutFileFromForm, camaraFile: camaraFileFromForm, ...payload } = values;
+      const sanitizedPayload = Object.fromEntries(
+        Object.entries(payload).filter(([, value]) => value !== undefined),
+      ) as Partial<Proveedor>;
 
       if (isEditMode && proveedor) {
-        await updateDoc(doc(db, 'proveedores', proveedor.id), payload);
+        await updateDoc(doc(db, 'proveedores', proveedor.id), sanitizedPayload);
         toast.success('Proveedor actualizado correctamente');
       } else {
         if (!rutFile || !camaraFile) {
@@ -65,13 +68,24 @@ export function ProveedorForm({ proveedor, onClose }: ProveedorFormProps) {
           return;
         }
 
-        const docRef = await addDoc(collection(db, 'proveedores'), payload);
+        const docRef = await addDoc(collection(db, 'proveedores'), sanitizedPayload);
 
         const rutStorageRef = ref(storage, `proveedores/${docRef.id}/rut.pdf`);
         const camaraStorageRef = ref(storage, `proveedores/${docRef.id}/camara.pdf`);
 
-        await uploadBytes(rutStorageRef, rutFileFromForm ?? rutFile);
-        await uploadBytes(camaraStorageRef, camaraFileFromForm ?? camaraFile);
+        const rutToUpload = rutFileFromForm ?? rutFile;
+        const camaraToUpload = camaraFileFromForm ?? camaraFile;
+
+        if (!rutToUpload || !camaraToUpload) {
+          throw new Error('Los documentos obligatorios no se encontraron.');
+        }
+
+        await uploadBytes(rutStorageRef, rutToUpload, {
+          contentType: rutToUpload.type || 'application/pdf',
+        });
+        await uploadBytes(camaraStorageRef, camaraToUpload, {
+          contentType: camaraToUpload.type || 'application/pdf',
+        });
 
         const [rutUrl, camaraUrl] = await Promise.all([
           getDownloadURL(rutStorageRef),

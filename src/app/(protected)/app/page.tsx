@@ -4,6 +4,7 @@ import { useState } from 'react';
 
 import { doc, writeBatch } from 'firebase/firestore';
 import { toast } from 'sonner';
+import * as XLSX from 'xlsx';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -22,6 +23,26 @@ import { PRECIOS_HUEVOS, type InventarioItem } from '@/lib/schemas';
 export default function InventarioPage() {
   const [isInitializing, setIsInitializing] = useState(false);
   const { data: inventario, loading } = useFirestoreCollection<InventarioItem>('inventario');
+
+  const handleExportExcel = () => {
+    if (inventario.length === 0) {
+      toast.info('No hay datos de inventario para exportar.');
+      return;
+    }
+
+    const dataToExport = inventario.map((item) => ({
+      'Tipo de Huevo': item.nombre,
+      Presentación: '30 unidades (cubeta)',
+      'Precio por Cubeta (COP)': item.precio,
+      'Stock Actual (Cubetas)': item.stock,
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Inventario');
+    XLSX.writeFile(workbook, 'Inventario_Huevos_Kikes.xlsx');
+    toast.success('Reporte de inventario generado.');
+  };
 
   // (RF-M3 / RF-M6) Lógica para inicializar la base de datos
   const handleInitData = async () => {
@@ -109,7 +130,7 @@ export default function InventarioPage() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-3xl font-bold">Inventario (RF-M3)</h2>
-        <Button className="bg-accent text-text-dark hover:bg-accent/90">
+        <Button className="bg-accent text-text-dark hover:bg-accent/90" onClick={handleExportExcel}>
           Generar Reporte Excel (RF-M3.3)
         </Button>
       </div>
