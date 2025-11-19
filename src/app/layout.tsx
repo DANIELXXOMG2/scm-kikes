@@ -1,15 +1,15 @@
-import { Geist, Geist_Mono } from 'next/font/google';
+import { Inter, Roboto_Mono } from 'next/font/google';
 
 import './globals.css';
 
 import type { Metadata } from 'next';
 
-const geistSans = Geist({
+const geistSans = Inter({
   variable: "--font-geist-sans",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
+const geistMono = Roboto_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
@@ -17,10 +17,10 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "SCM Huevos Kikes",
   description: "Sistema de Gestión de Cadena de Suministro - Huevos Kikes Villavicencio",
-  icons: {
-    icon: '/assets/logos/LOGO-KIKES.avif',
-    apple: '/assets/logos/LOGO-KIKES.avif',
-  },
+  icons: [
+    { rel: 'icon', url: '/assets/logos/LOGO-KIKES.avif' },
+    { rel: 'apple-touch-icon', url: '/assets/logos/LOGO-KIKES.avif' },
+  ],
 };
 
 export default function RootLayout({
