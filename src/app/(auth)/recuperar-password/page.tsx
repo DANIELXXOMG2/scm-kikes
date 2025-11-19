@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-import { sendPasswordResetEmail } from 'firebase/auth';
+import { fetchSignInMethodsForEmail, sendPasswordResetEmail } from 'firebase/auth';
 import Image from 'next/image';
 import Link from 'next/link';
 import { toast } from 'sonner';
@@ -16,15 +16,31 @@ import { auth } from '@/lib/firebase';
 
 export default function RecuperarPasswordPage() {
   const [email, setEmail] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleReset = async (e: React.FormEvent) => {
     e.preventDefault();
+    const trimmedEmail = email.trim();
+    if (!trimmedEmail) {
+      toast.warning('Ingresa un correo válido.');
+      return;
+    }
+
+    setIsSubmitting(true);
     try {
-      await sendPasswordResetEmail(auth, email);
+      const methods = await fetchSignInMethodsForEmail(auth, trimmedEmail);
+      if (methods.length === 0) {
+        toast.warning('El correo ingresado no está registrado.');
+        return;
+      }
+
+      await sendPasswordResetEmail(auth, trimmedEmail);
       toast.success('Enlace de recuperación enviado a su correo.');
     } catch (error) {
       console.error(error);
       toast.error('Error al enviar el correo.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -60,8 +76,12 @@ export default function RecuperarPasswordPage() {
                   className="bg-base focus:border-accent"
                 />
               </div>
-              <Button type="submit" className="w-full bg-accent text-text-dark hover:bg-accent/90">
-                Enviar Enlace
+              <Button
+                type="submit"
+                className="w-full bg-accent text-text-dark hover:bg-accent/90"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? 'Enviando...' : 'Enviar Enlace'}
               </Button>
               <Link href="/login" passHref>
                 <Button variant="link" className="w-full text-text-dark">

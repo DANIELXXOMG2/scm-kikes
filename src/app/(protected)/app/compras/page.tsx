@@ -170,6 +170,7 @@ export default function ComprasPage() {
 
     try {
       const total = totalCompra;
+      const transaccionRef = doc(collection(db, 'transacciones'));
 
       await runTransaction(db, async (transaction) => {
         const saldoRef = doc(db, 'contabilidad', 'saldo');
@@ -204,7 +205,6 @@ export default function ComprasPage() {
           monto: saldoActual - total,
         });
 
-        const transaccionRef = doc(collection(db, 'transacciones'));
         transaction.set(transaccionRef, {
           fecha: Timestamp.fromDate(fechaPago),
           tipo: 'egreso',
@@ -222,6 +222,7 @@ export default function ComprasPage() {
         medioDePago: medioPago,
         fecha: Timestamp.fromDate(fechaPago),
         creadoEn: serverTimestamp(),
+        transaccionId: transaccionRef.id,
       });
 
       toast.success('Compra registrada.');

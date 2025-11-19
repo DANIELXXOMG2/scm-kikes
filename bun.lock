@@ -25,6 +25,7 @@
         "lucide-react": "^0.553.0",
         "next": "14.2.13",
         "next-themes": "^0.4.6",
+        "pdf-lib": "^1.17.1",
         "react": "18.2.0",
         "react-day-picker": "^9.11.1",
         "react-dom": "18.2.0",
@@ -226,6 +227,10 @@
     "@nodelib/fs.walk": ["@nodelib/fs.walk@1.2.8", "", { "dependencies": { "@nodelib/fs.scandir": "2.1.5", "fastq": "^1.6.0" } }, "sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg=="],
 
     "@nolyfill/is-core-module": ["@nolyfill/is-core-module@1.0.39", "", {}, ""],
+
+    "@pdf-lib/standard-fonts": ["@pdf-lib/standard-fonts@1.0.0", "", { "dependencies": { "pako": "^1.0.6" } }, "sha512-hU30BK9IUN/su0Mn9VdlVKsWBS6GyhVfqjwl1FjZN4TxP6cCw0jP2w7V3Hf5uX7M0AZJ16vey9yE0ny7Sa59ZA=="],
+
+    "@pdf-lib/upng": ["@pdf-lib/upng@1.0.1", "", { "dependencies": { "pako": "^1.0.10" } }, "sha512-dQK2FUMQtowVP00mtIksrlZhdFXQZPC+taih1q4CvPZ5vqdxR/LKBaFg0oAfzd1GlHZXXSPdQfzQnt+ViGvEIQ=="],
 
     "@pkgjs/parseargs": ["@pkgjs/parseargs@0.11.0", "", {}, "sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg=="],
 
@@ -907,6 +912,8 @@
 
     "p-locate": ["p-locate@5.0.0", "", { "dependencies": { "p-limit": "^3.0.2" } }, ""],
 
+    "pako": ["pako@1.0.11", "", {}, "sha512-4hLB8Py4zZce5s4yd9XzopqwVv/yGNhV1Bl8NTmCq1763HeK2+EwVTv+leGeL13Dnh2wfbqowVPXCIO0z4taYw=="],
+
     "parent-module": ["parent-module@1.0.1", "", { "dependencies": { "callsites": "^3.0.0" } }, "sha512-GQ2EWRpQV8/o+Aw8YqtfZZPfNRWZYkbidE9k5rpl/hC3vtHHBfGm2Ifi6qWV+coDGkrUKZAxE3Lot5kcsRlh+g=="],
 
     "path-exists": ["path-exists@4.0.0", "", {}, ""],
@@ -920,6 +927,8 @@
     "path-scurry": ["path-scurry@1.11.1", "", { "dependencies": { "lru-cache": "^10.2.0", "minipass": "^5.0.0 || ^6.0.2 || ^7.0.0" } }, "sha512-Xa4Nw17FS9ApQFJ9umLiJS4orGjm7ZzwUrwamcGQuHSzDyth9boKDaycYdDcZDuqYATXw4HFXgaqWTctW/v1HA=="],
 
     "path-type": ["path-type@4.0.0", "", {}, "sha512-gDKb8aZMDeD/tZWs9P6+q0J9Mwkdl6xMV8TjnGP3qJVJ06bdMgkbBlLU8IdfOsIsFz2BW1rNVT3XuNEl8zPAvw=="],
+
+    "pdf-lib": ["pdf-lib@1.17.1", "", { "dependencies": { "@pdf-lib/standard-fonts": "^1.0.0", "@pdf-lib/upng": "^1.0.1", "pako": "^1.0.11", "tslib": "^1.11.1" } }, "sha512-V/mpyJAoTsN4cnP31vc0wfNA1+p20evqqnap0KLoRUN0Yk/p3wN52DOEsL4oBFcLdb76hlpKPtzJIgo67j/XLw=="],
 
     "picocolors": ["picocolors@1.1.1", "", {}, ""],
 
@@ -1071,7 +1080,7 @@
 
     "tsconfig-paths": ["tsconfig-paths@3.15.0", "", { "dependencies": { "@types/json5": "^0.0.29", "json5": "^1.0.2", "minimist": "^1.2.6", "strip-bom": "^3.0.0" } }, ""],
 
-    "tslib": ["tslib@2.8.1", "", {}, ""],
+    "tslib": ["tslib@1.14.1", "", {}, "sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg=="],
 
     "type-check": ["type-check@0.4.0", "", { "dependencies": { "prelude-ls": "^1.2.1" } }, ""],
 
@@ -1139,6 +1148,70 @@
 
     "zod": ["zod@3.25.76", "", {}, "sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ=="],
 
+    "@emnapi/core/tslib": ["tslib@2.8.1", "", {}, ""],
+
+    "@emnapi/runtime/tslib": ["tslib@2.8.1", "", {}, ""],
+
+    "@emnapi/wasi-threads/tslib": ["tslib@2.8.1", "", {}, ""],
+
+    "@firebase/ai/tslib": ["tslib@2.8.1", "", {}, ""],
+
+    "@firebase/analytics/tslib": ["tslib@2.8.1", "", {}, ""],
+
+    "@firebase/analytics-compat/tslib": ["tslib@2.8.1", "", {}, ""],
+
+    "@firebase/app/tslib": ["tslib@2.8.1", "", {}, ""],
+
+    "@firebase/app-check/tslib": ["tslib@2.8.1", "", {}, ""],
+
+    "@firebase/app-check-compat/tslib": ["tslib@2.8.1", "", {}, ""],
+
+    "@firebase/app-compat/tslib": ["tslib@2.8.1", "", {}, ""],
+
+    "@firebase/auth/tslib": ["tslib@2.8.1", "", {}, ""],
+
+    "@firebase/auth-compat/tslib": ["tslib@2.8.1", "", {}, ""],
+
+    "@firebase/component/tslib": ["tslib@2.8.1", "", {}, ""],
+
+    "@firebase/data-connect/tslib": ["tslib@2.8.1", "", {}, ""],
+
+    "@firebase/database/tslib": ["tslib@2.8.1", "", {}, ""],
+
+    "@firebase/database-compat/tslib": ["tslib@2.8.1", "", {}, ""],
+
+    "@firebase/firestore/tslib": ["tslib@2.8.1", "", {}, ""],
+
+    "@firebase/firestore-compat/tslib": ["tslib@2.8.1", "", {}, ""],
+
+    "@firebase/functions/tslib": ["tslib@2.8.1", "", {}, ""],
+
+    "@firebase/functions-compat/tslib": ["tslib@2.8.1", "", {}, ""],
+
+    "@firebase/installations/tslib": ["tslib@2.8.1", "", {}, ""],
+
+    "@firebase/installations-compat/tslib": ["tslib@2.8.1", "", {}, ""],
+
+    "@firebase/logger/tslib": ["tslib@2.8.1", "", {}, ""],
+
+    "@firebase/messaging/tslib": ["tslib@2.8.1", "", {}, ""],
+
+    "@firebase/messaging-compat/tslib": ["tslib@2.8.1", "", {}, ""],
+
+    "@firebase/performance/tslib": ["tslib@2.8.1", "", {}, ""],
+
+    "@firebase/performance-compat/tslib": ["tslib@2.8.1", "", {}, ""],
+
+    "@firebase/remote-config/tslib": ["tslib@2.8.1", "", {}, ""],
+
+    "@firebase/remote-config-compat/tslib": ["tslib@2.8.1", "", {}, ""],
+
+    "@firebase/storage/tslib": ["tslib@2.8.1", "", {}, ""],
+
+    "@firebase/storage-compat/tslib": ["tslib@2.8.1", "", {}, ""],
+
+    "@firebase/util/tslib": ["tslib@2.8.1", "", {}, ""],
+
     "@isaacs/cliui/string-width": ["string-width@5.1.2", "", { "dependencies": { "eastasianwidth": "^0.2.0", "emoji-regex": "^9.2.2", "strip-ansi": "^7.0.1" } }, "sha512-HnLOCR3vjcY8beoNLtcjZ5/nxn2afmME6lhrDrebokqMap+XbeW8n9TXpPDOqdGK5qcI3oT0GKTW6wC7EMiVqA=="],
 
     "@isaacs/cliui/strip-ansi": ["strip-ansi@7.1.2", "", { "dependencies": { "ansi-regex": "^6.0.1" } }, "sha512-gmBGslpoQJtgnMAvOVqGZpEz9dyoKTCzy2nfz/n8aIFhN/jCE/rCmcxabB6jOOHV+0WNnylOxaxBQPSvcWklhA=="],
@@ -1157,7 +1230,13 @@
 
     "@radix-ui/react-select/@radix-ui/react-slot": ["@radix-ui/react-slot@1.2.3", "", { "dependencies": { "@radix-ui/react-compose-refs": "1.1.2" }, "peerDependencies": { "@types/react": "*", "react": "^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc" } }, "sha512-aeNmHnBxbi2St0au6VBVC7JXFlhLlOnvIIlePNniyUNAClzmtAUEY8/pBiK3iHjufOlwA+c20/8jngo7xcrg8A=="],
 
+    "@swc/helpers/tslib": ["tslib@2.8.1", "", {}, ""],
+
+    "@tybys/wasm-util/tslib": ["tslib@2.8.1", "", {}, ""],
+
     "@typescript-eslint/typescript-estree/minimatch": ["minimatch@9.0.3", "", { "dependencies": { "brace-expansion": "^2.0.1" } }, "sha512-RHiac9mvaRw0x3AYRgDC1CxAP7HTcNrrECeA8YYJeWnpo+2Q5CegtZjaotWTWxDG3UeGA1coE05iH1mPjT/2mg=="],
+
+    "aria-hidden/tslib": ["tslib@2.8.1", "", {}, ""],
 
     "cliui/wrap-ansi": ["wrap-ansi@7.0.0", "", { "dependencies": { "ansi-styles": "^4.0.0", "string-width": "^4.1.0", "strip-ansi": "^6.0.0" } }, "sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q=="],
 
@@ -1189,11 +1268,21 @@
 
     "next/postcss": ["postcss@8.4.31", "", { "dependencies": { "nanoid": "^3.3.6", "picocolors": "^1.0.0", "source-map-js": "^1.0.2" } }, ""],
 
+    "react-remove-scroll/tslib": ["tslib@2.8.1", "", {}, ""],
+
+    "react-remove-scroll-bar/tslib": ["tslib@2.8.1", "", {}, ""],
+
+    "react-style-singleton/tslib": ["tslib@2.8.1", "", {}, ""],
+
     "rimraf/glob": ["glob@7.2.3", "", { "dependencies": { "fs.realpath": "^1.0.0", "inflight": "^1.0.4", "inherits": "2", "minimatch": "^3.1.1", "once": "^1.3.0", "path-is-absolute": "^1.0.0" } }, "sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q=="],
 
     "string-width/emoji-regex": ["emoji-regex@8.0.0", "", {}, ""],
 
     "string-width-cjs/emoji-regex": ["emoji-regex@8.0.0", "", {}, ""],
+
+    "use-callback-ref/tslib": ["tslib@2.8.1", "", {}, ""],
+
+    "use-sidecar/tslib": ["tslib@2.8.1", "", {}, ""],
 
     "wrap-ansi/ansi-styles": ["ansi-styles@6.2.3", "", {}, "sha512-4Dj6M28JB+oAH8kFkTLUo+a2jwOFkuqb3yucU0CANcRRUbxS0cP0nZYCGjcc3BNXwRIsUVmDGgzawme7zvJHvg=="],
 
@@ -1246,5 +1335,7 @@
     "cmdk/@radix-ui/react-dialog/@radix-ui/react-presence/@radix-ui/react-use-layout-effect": ["@radix-ui/react-use-layout-effect@1.0.0", "", { "dependencies": { "@babel/runtime": "^7.13.10" }, "peerDependencies": { "react": "^16.8 || ^17.0 || ^18.0" } }, "sha512-6Tpkq+R6LOlmQb1R5NNETLG0B4YP0wc+klfXafpUCj6JGyaUc8il7/kUZ7m59rGbXGczE9Bs+iz2qloqsZBduQ=="],
 
     "cmdk/@radix-ui/react-dialog/@radix-ui/react-use-controllable-state/@radix-ui/react-use-callback-ref": ["@radix-ui/react-use-callback-ref@1.0.0", "", { "dependencies": { "@babel/runtime": "^7.13.10" }, "peerDependencies": { "react": "^16.8 || ^17.0 || ^18.0" } }, "sha512-GZtyzoHz95Rhs6S63D2t/eqvdFCm7I+yHMLVQheKM7nBD8mbZIt+ct1jz4536MDnaOGKIxynJ8eHTkVGVVkoTg=="],
+
+    "cmdk/@radix-ui/react-dialog/react-remove-scroll/tslib": ["tslib@2.8.1", "", {}, ""],
   }
 }

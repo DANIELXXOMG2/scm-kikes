@@ -142,6 +142,7 @@ export default function VentasPage() {
 
     try {
       const total = totalVenta;
+      const transaccionRef = doc(collection(db, 'transacciones'));
 
       await runTransaction(db, async (transaction) => {
         const saldoRef = doc(db, 'contabilidad', 'saldo');
@@ -193,7 +194,6 @@ export default function VentasPage() {
           monto: saldoActual + total,
         });
 
-        const transaccionRef = doc(collection(db, 'transacciones'));
         transaction.set(transaccionRef, {
           fecha: serverTimestamp(),
           tipo: 'ingreso',
@@ -210,6 +210,7 @@ export default function VentasPage() {
         total: totalVenta,
         vendedorEmail: user?.email ?? 'desconocido',
         fecha: serverTimestamp(),
+        transaccionId: transaccionRef.id,
       });
 
       toast.success('Venta registrada.');

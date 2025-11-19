@@ -1,5 +1,10 @@
 'use client';
 
+import { useCallback, useMemo, useState } from 'react';
+
+import { Download, Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
+
 import { SaldoActualCard } from '@/components/dashboard/SaldoActualCard';
 import { Card, CardContent } from '@/components/ui/card';
 import {
@@ -11,7 +16,8 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { useFirestoreCollection } from '@/hooks/useFirestoreCollection';
-import { type Transaccion } from '@/lib/schemas';
+import { generarComprobanteCompraPdf, generarFacturaVentaPdf } from '@/lib/pdf';
+import { type Compra, type Transaccion, type Venta } from '@/lib/schemas';
 
 function formatFecha(timestamp: Transaccion['fecha']) {
   if (timestamp && typeof timestamp.toDate === 'function') {
@@ -47,13 +53,83 @@ export default function SaldoPage() {
     error,
   } = useFirestoreCollection<Transaccion>('transacciones');
 
-  const sortedTransacciones = [...transacciones].sort((a, b) => {
-    const fechaA = a.fecha && typeof a.fecha.toDate === 'function' ? a.fecha.toDate() : new Date(a.fecha ?? 0);
-    const fechaB = b.fecha && typeof b.fecha.toDate === 'function' ? b.fecha.toDate() : new Date(b.fecha ?? 0);
-    const timeA = Number.isNaN(fechaA.getTime()) ? 0 : fechaA.getTime();
-    const timeB = Number.isNaN(fechaB.getTime()) ? 0 : fechaB.getTime();
-    return timeB - timeA;
-  });
+  const { data: ventas } = useFirestoreCollection<Venta>('ventas');
+  const { data: compras } = useFirestoreCollection<Compra>('compras');
+
+  const [downloadingId, setDownloadingId] = useState<string | null>(null);
+
+  const ventasPorTransaccion = useMemo(() => {
+    const map = new Map<string, Venta>();
+    ventas.forEach((venta) => {
+      if (venta.transaccionId) {
+        map.set(venta.transaccionId, venta);
+      }
+    });
+    return map;
+  }, [ventas]);
+
+  const comprasPorTransaccion = useMemo(() => {
+    const map = new Map<string, Compra>();
+    compras.forEach((compra) => {
+      if (compra.transaccionId) {
+        map.set(compra.transaccionId, compra);
+      }
+    });
+    return map;
+  }, [compras]);
+
+  const sortedTransacciones = useMemo(() => {
+    return [...transacciones].sort((a, b) => {
+      const fechaA = a.fecha && typeof a.fecha.toDate === 'function' ? a.fecha.toDate() : new Date(a.fecha ?? 0);
+      const fechaB = b.fecha && typeof b.fecha.toDate === 'function' ? b.fecha.toDate() : new Date(b.fecha ?? 0);
+      const timeA = Number.isNaN(fechaA.getTime()) ? 0 : fechaA.getTime();
+      const timeB = Number.isNaN(fechaB.getTime()) ? 0 : fechaB.getTime();
+      return timeB - timeA;
+    });
+  }, [transacciones]);
+
+  const handleDownloadPdf = useCallback(
+    async (transaccion: Transaccion) => {
+      try {
+        setDownloadingId(transaccion.id);
+        let blob: Blob;
+
+        if (transaccion.tipo === 'ingreso') {
+          const venta = ventasPorTransaccion.get(transaccion.id);
+          if (!venta) {
+            throw new Error('No se encontró la venta asociada a esta transacción.');
+          }
+          blob = await generarFacturaVentaPdf({ transaccion, venta });
+        } else {
+          const compra = comprasPorTransaccion.get(transaccion.id);
+          if (!compra) {
+            throw new Error('No se encontró la compra asociada a esta transacción.');
+          }
+          blob = await generarComprobanteCompraPdf({ transaccion, compra });
+        }
+
+        const filenamePrefix = transaccion.tipo === 'ingreso' ? 'factura' : 'comprobante';
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `${filenamePrefix}-${transaccion.id}.pdf`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      } catch (downloadError) {
+        console.error('Error al generar el comprobante:', downloadError);
+        toast.error(
+          downloadError instanceof Error
+            ? downloadError.message
+            : 'No fue posible generar el PDF solicitado.',
+        );
+      } finally {
+        setDownloadingId(null);
+      }
+    },
+    [comprasPorTransaccion, ventasPorTransaccion],
+  );
 
   return (
     <div className="space-y-6">
@@ -95,22 +171,50 @@ export default function SaldoPage() {
                     </TableCell>
                   </TableRow>
                 ) : (
-                  sortedTransacciones.map((transaccion) => (
-                    <TableRow key={transaccion.id} className="border-accent/10">
-                      <TableCell>{formatFecha(transaccion.fecha)}</TableCell>
-                      <TableCell className="capitalize">
-                        {transaccion.tipo === 'ingreso' ? 'Ingreso' : 'Egreso'}
-                      </TableCell>
-                      <TableCell>{transaccion.concepto}</TableCell>
-                      <TableCell
-                        className={`text-right font-semibold ${
-                          transaccion.tipo === 'ingreso' ? 'text-accent' : 'text-danger'
-                        }`}
-                      >
-                        {formatCurrency(transaccion.monto)}
-                      </TableCell>
-                    </TableRow>
-                  ))
+                  sortedTransacciones.map((transaccion) => {
+                    const esIngreso = transaccion.tipo === 'ingreso';
+                    const tieneSoporte = esIngreso
+                      ? ventasPorTransaccion.has(transaccion.id)
+                      : comprasPorTransaccion.has(transaccion.id);
+                    const estaDescargando = downloadingId === transaccion.id;
+
+                    return (
+                      <TableRow key={transaccion.id} className="border-accent/10">
+                        <TableCell>{formatFecha(transaccion.fecha)}</TableCell>
+                        <TableCell className="capitalize">
+                          {esIngreso ? 'Ingreso' : 'Egreso'}
+                        </TableCell>
+                        <TableCell>{transaccion.concepto}</TableCell>
+                        <TableCell
+                          className={`text-right font-semibold ${
+                            esIngreso ? 'text-accent' : 'text-danger'
+                          }`}
+                        >
+                          <div className="flex items-center justify-end gap-2">
+                            <span>{formatCurrency(transaccion.monto)}</span>
+                            <button
+                              type="button"
+                              onClick={() => handleDownloadPdf(transaccion)}
+                              disabled={!tieneSoporte || estaDescargando}
+                              aria-label={esIngreso ? 'Descargar factura en PDF' : 'Descargar comprobante en PDF'}
+                              title={
+                                tieneSoporte
+                                  ? 'Descargar PDF'
+                                  : 'Sin comprobante disponible para esta transacción'
+                              }
+                              className="rounded-full border border-transparent p-1 text-text-dark/70 transition hover:text-text-dark disabled:cursor-not-allowed disabled:opacity-40"
+                            >
+                              {estaDescargando ? (
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                              ) : (
+                                <Download className="h-4 w-4" />
+                              )}
+                            </button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })
                 )}
               </TableBody>
             </Table>

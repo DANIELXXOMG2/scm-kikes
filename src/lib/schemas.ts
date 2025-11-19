@@ -64,3 +64,28 @@ export const itemTransaccionalSchema = z.object({
   subtotal: z.number(),
 });
 export type ItemTransaccional = z.infer<typeof itemTransaccionalSchema>;
+
+export const ventaSchema = z.object({
+  clienteId: z.string(),
+  clienteNombre: z.string(),
+  clienteCedula: z.string(),
+  items: z.array(itemTransaccionalSchema),
+  total: z.number(),
+  vendedorEmail: z.string().optional(),
+  fecha: z.any(),
+  transaccionId: z.string().optional(),
+});
+export type Venta = z.infer<typeof ventaSchema> & { id: string };
+
+export const compraSchema = z.object({
+  proveedorId: z.string(),
+  proveedorNombre: z.string(),
+  proveedorNit: z.string(),
+  items: z.array(itemTransaccionalSchema),
+  total: z.number(),
+  medioDePago: z.string(),
+  fecha: z.any(),
+  creadoEn: z.any().optional(),
+  transaccionId: z.string().optional(),
+});
+export type Compra = z.infer<typeof compraSchema> & { id: string };
